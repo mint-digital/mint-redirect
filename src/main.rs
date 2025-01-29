@@ -8,7 +8,10 @@ use std::env;
 #[tokio::main]
 async fn main() {
     let app = Router::new()
-        .fallback(get(|| async { Redirect::permanent("https://www.teamtailor.com") }));
+        .fallback(get(move || async {
+            Redirect::permanent(&env::var("REDIR_URL")
+                .unwrap_or("https://www.mint.se".to_string()))
+        }));
 
     let port = env::var("APP_PORT").unwrap_or("5000".to_string());
     let iface = format!("0.0.0.0:{}", port);
